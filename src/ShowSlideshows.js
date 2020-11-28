@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 
-const ShowApps = () => {
-  const [apps, setApps] = useState([]);
+const ShowSlideshows = () => {
+  const [slideshows, setSlideshows] = useState([]);
 
   const {
     getTokenSilently,
@@ -11,12 +11,12 @@ const ShowApps = () => {
   } = useAuth0();
 
   useEffect(() => {
-    const getApps = async () => {
+    const getSlideshows = async () => {
       try {
         const token = await getTokenSilently();
         // Send a GET request to the server and add the signed in user's
         // access token in the Authorization header
-        const response = await fetch("http://localhost:8080/apps", {
+        const response = await fetch("http://localhost:8080/slideshows", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -24,13 +24,13 @@ const ShowApps = () => {
 
         const responseData = await response.json();
 
-        setApps(responseData);
+        setSlideshows(responseData);
       } catch (error) {
         console.error(error);
       }
     };
 
-    getApps();
+    getSlideshows();
   }, []);
 
   if (loading || !user) {
@@ -41,12 +41,12 @@ const ShowApps = () => {
     <div className="container">
       <div className="jumbotron text-center mt-5">
         <div className="row">
-          {apps.map(function (app, index) {
+          {slideshows.map(function (slideshow, index) {
             return (
               <div className="col-sm-4" key={index}>
                 <div className="card mb-4">
-                  <div className="card-header">{app.Name}</div>
-                  <div className="card-body">{app.Description}</div>
+                  <div className="card-header">{slideshow.Name}</div>
+                  <div className="card-body">{slideshow.Description}</div>
                   <div className="card-footer">
                   </div>
                 </div>
@@ -59,4 +59,4 @@ const ShowApps = () => {
   );
 };
 
-export default ShowApps;
+export default ShowSlideshows;
