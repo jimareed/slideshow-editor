@@ -1,9 +1,9 @@
 # slideshow-editor
 
-Basic RBAC implimentation using React, Go and Auth0. Also requires https://github.com/jimareed/auth0-rbac-backend. Based on https://github.com/jimareed/react-auth0-login, the samples from Auth0 and the Auth0 blog: https://auth0.com/blog/authentication-in-golang/.
+Example of a simple cloud native application which includes a microservices design, containerization, authentication and authorization. Built using React, Go and docker. Deployed to AWS.. Also requires https://github.com/jimareed/slideshow-data. Based on https://github.com/jimareed/react-auth0-login, the samples from Auth0 and the Auth0 blog: https://auth0.com/blog/authentication-in-golang/.
 
 <p  align="center">
-    <img src="./images/auth0-rbac.png" alt="Auth0 RBAC"/>
+    <img src="./images/slideshow-editor.png" alt="Slideshow Editor"/>
 </p>
 
 

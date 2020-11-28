@@ -24,7 +24,7 @@ const App = () => {
       </Navbar.Collapse>
     </Navbar>
     <Jumbotron>
-      <p>Basic RBAC implimentation using React, Go and Auth0.</p>
+      <p>Example of a simple cloud native application which includes a microservices design, containerization, authentication and authorization. Built using React, Go and docker. Deployed to AWS.</p>
       <Profile/>
     </Jumbotron>
   </Container>

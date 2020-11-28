@@ -12,14 +12,14 @@ const Profile = () => {
   if (!isAuthenticated || !user) {
     return (
       <div>
-        <p>Select <b>Login</b> to continue.</p>
+        <p><b>Login</b> to continue.</p>
       </div>
     )
   }
 
   return (
       <div>
-        <p><b>Welcome {user.name}!</b> Please review the apps below. </p>
+        <p><b>Welcome {user.name}!</b> Select a slideshow below to learn more about the application. </p>
         <div>
           <ShowSlideshows />
         </div>

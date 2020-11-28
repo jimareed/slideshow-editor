@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
+import Slideshow from "./Slideshow"
 
 const ShowSlideshows = () => {
   const [slideshows, setSlideshows] = useState([]);
+  const [isOpen, setIsOpen] = useState([]);
+  const [selectedSlideshow, setSelectedSlideshow] = useState([]);
 
   const {
     getTokenSilently,
     loading,
     user,
   } = useAuth0();
+
+  function openSlideshow(name) {
+    setSelectedSlideshow("http://jimareed.com:8080/"+name);
+    setIsOpen(true);
+  }
 
   useEffect(() => {
     const getSlideshows = async () => {
@@ -31,6 +39,8 @@ const ShowSlideshows = () => {
     };
 
     getSlideshows();
+    setIsOpen(false);
+    setSelectedSlideshow("")
   }, []);
 
   if (loading || !user) {
@@ -45,16 +55,17 @@ const ShowSlideshows = () => {
             return (
               <div className="col-sm-4" key={index}>
                 <div className="card mb-4">
-                  <div className="card-header">{slideshow.Name}</div>
-                  <div className="card-body">{slideshow.Description}</div>
-                  <div className="card-footer">
-                  </div>
+                  <div className="card-header" onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
+                  <div className="card-body" onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
+                  <div className="card-footer" onClick={(e) => openSlideshow(slideshow.Id)}></div>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+      <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
+      </Slideshow>
     </div>
   );
 };
