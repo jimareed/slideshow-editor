@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 import Slideshow from "./Slideshow"
 
+const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
+const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
+
+
+let cardStyles = {
+  cursor: 'pointer'
+}
+
 const ShowSlideshows = () => {
   const [slideshows, setSlideshows] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
@@ -14,7 +22,7 @@ const ShowSlideshows = () => {
   } = useAuth0();
 
   function openSlideshow(name) {
-    setSelectedSlideshow("http://jimareed.com:8080/"+name);
+    setSelectedSlideshow(SLIDESHOW_URI + "/"+name);
     setIsOpen(true);
   }
 
@@ -24,7 +32,7 @@ const ShowSlideshows = () => {
         const token = await getTokenSilently();
         // Send a GET request to the server and add the signed in user's
         // access token in the Authorization header
-        const response = await fetch("http://localhost:8080/slideshows", {
+        const response = await fetch(SLIDESHOW_DATA_URI + "/slideshows", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -54,7 +62,7 @@ const ShowSlideshows = () => {
           {slideshows.map(function (slideshow, index) {
             return (
               <div className="col-sm-4" key={index}>
-                <div className="card mb-4">
+                <div className="card mb-4" style={cardStyles}>
                   <div className="card-header" onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
                   <div className="card-body" onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
                   <div className="card-footer" onClick={(e) => openSlideshow(slideshow.Id)}></div>

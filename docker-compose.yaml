@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  slideshow-editor:
+    image: slideshow-editor-image
+    container_name: slideshow-editor
+    ports:
+      - "3000:3000"
+    networks:
+      - default
+    environment:
+      - REACT_APP_DOMAIN=-- insert here --
+      - REACT_APP_CLIENTID=-- insert here --
+      - REACT_APP_AUDIENCE=-- insert here --
+      - REACT_APP_SLIDESHOW_URI=-- insert here --
+      - REACT_APP_SLIDESHOW_DATA_URI=-- insert here --
+
+      
+networks:
+    default:
