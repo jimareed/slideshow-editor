@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Iframe from 'react-iframe'
 
 let slideshowStyles = {
-    width: '1000px',
+    width: '1024px',
+    height: '768px',
     maxWidth: '100%',
     margin: '0 auto',
     position: 'fixed',
@@ -10,7 +11,8 @@ let slideshowStyles = {
     top: '45%',
     transform: 'translate(-50%,-50%)',
     zIndex: '999',
-    backgroundColor: '#eee',
+    backgroundColor: '#FFFFFF',
+    border: '2px solid black',
     padding: '10px 20px 40px',
     borderRadius: '8px',
     display: 'flex',
@@ -22,6 +24,7 @@ let slideshowCloseButtonStyles = {
     padding: '3px 8px',
     cursor: 'pointer',
     borderRadius: '50%',
+    backgroundColor: '#FFFFFF',
     border: 'none',
     width: '30px',
     height: '30px',
@@ -36,8 +39,8 @@ class Slideshow extends Component {
             <div style={slideshowStyles}>
                 <button style={slideshowCloseButtonStyles} onClick={this.props.onClose}>x</button>
                 <Iframe url={this.props.slideshow}
-                        width="1000px"
-                        height="700px"
+                        width="100%"
+                        height="100%"
                         id="myId"
                         className="myClassname"
                         display="initial"
