@@ -1,13 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 import Slideshow from "./Slideshow"
+import { FiMoreHorizontal } from "react-icons/fi";
+import { IconContext } from "react-icons/lib";
 
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
 const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
 
 
-let cardStyles = {
+let footerButtonStyles = {
+  marginBottom: '15px',
+  padding: '3px 8px',
+  cursor: 'pointer',
+  borderRadius: '50%',
+  border: 'none',
+  width: '30px',
+  height: '30px',
+  fontWeight: 'bold',
+  alignSelf: 'flex-end',
+  float: 'right'
+}
+
+let cardHeaderStyles = {
+  height: '60px',
   cursor: 'pointer'
+}
+
+let cardBodyStyles = {
+  height: '100px',
+  cursor: 'pointer'
+}
+
+let cardFooterStyles = {
+  height: '50px',
 }
 
 const ShowSlideshows = () => {
@@ -51,6 +76,10 @@ const ShowSlideshows = () => {
     setSelectedSlideshow("")
   }, []);
 
+  const action = () => {
+  };
+
+
   if (loading || !user) {
     return <div>Loading...</div>;
   }
@@ -62,10 +91,12 @@ const ShowSlideshows = () => {
           {slideshows.map(function (slideshow, index) {
             return (
               <div className="col-sm-4" key={index}>
-                <div className="card mb-4" style={cardStyles}>
-                  <div className="card-header" onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
-                  <div className="card-body" onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
-                  <div className="card-footer" onClick={(e) => openSlideshow(slideshow.Id)}></div>
+                <div className="card mb-4">
+                  <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
+                  <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
+                  <div className="card-footer"  style={cardFooterStyles} >
+                    <button style={footerButtonStyles} onClick={action()}><FiMoreHorizontal/></button>
+                  </div>
                 </div>
               </div>
             );
