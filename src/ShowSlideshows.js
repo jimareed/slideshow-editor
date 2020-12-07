@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 import Slideshow from "./Slideshow"
+import ContextMenu from "./ContextMenu"
 import { FiMoreHorizontal } from "react-icons/fi";
-import { IconContext } from "react-icons/lib";
 
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
 const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
-
 
 let footerButtonStyles = {
   marginBottom: '15px',
@@ -38,6 +37,7 @@ let cardFooterStyles = {
 const ShowSlideshows = () => {
   const [slideshows, setSlideshows] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
+  const [isContextOpen, setIsContextOpen] = useState([]);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
 
   const {
@@ -49,6 +49,11 @@ const ShowSlideshows = () => {
   function openSlideshow(name) {
     setSelectedSlideshow(SLIDESHOW_URI + "/"+name);
     setIsOpen(true);
+  }
+
+  function openContext(name) {
+    setSelectedSlideshow(name);
+    setIsContextOpen(false);
   }
 
   useEffect(() => {
@@ -73,6 +78,7 @@ const ShowSlideshows = () => {
 
     getSlideshows();
     setIsOpen(false);
+    setIsContextOpen(false);
     setSelectedSlideshow("")
   }, []);
 
@@ -95,7 +101,7 @@ const ShowSlideshows = () => {
                   <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
                   <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
                   <div className="card-footer"  style={cardFooterStyles} >
-                    <button style={footerButtonStyles} onClick={action()}><FiMoreHorizontal/></button>
+                    <button style={footerButtonStyles} onClick={(e) => openContext(slideshow.Id)}><FiMoreHorizontal/></button>
                   </div>
                 </div>
               </div>
@@ -105,6 +111,8 @@ const ShowSlideshows = () => {
       </div>
       <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
       </Slideshow>
+      <ContextMenu isOpen={isContextOpen} slideshow={selectedSlideshow} onClose={(e) => setIsContextOpen(false)}>
+      </ContextMenu>
     </div>
   );
 };
