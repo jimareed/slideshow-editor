@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 import Slideshow from "./Slideshow"
-import ContextMenu from "./ContextMenu"
 import { FiMoreHorizontal } from "react-icons/fi";
+import {Menu, Item, useContextMenu } from 'react-contexify';
+import 'react-contexify/dist/ReactContexify.css';
+
+const MENU_ID = 'menu-1';
 
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
 const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
@@ -37,8 +40,16 @@ let cardFooterStyles = {
 const ShowSlideshows = () => {
   const [slideshows, setSlideshows] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
-  const [isContextOpen, setIsContextOpen] = useState([]);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
+
+  const { show } = useContextMenu({
+    id: MENU_ID
+  });
+
+  function handleItemClick({ event, props, triggerEvent, data }){
+    console.log("item clicked!" );
+    console.log(event.currentTarget.id);
+  }
 
   const {
     getTokenSilently,
@@ -51,34 +62,50 @@ const ShowSlideshows = () => {
     setIsOpen(true);
   }
 
-  function openContext(name) {
-    setSelectedSlideshow(name);
-    setIsContextOpen(false);
-  }
+  const getSlideshows = async () => {
+    try {
+      const token = await getTokenSilently();
+      // Send a GET request to the server and add the signed in user's
+      // access token in the Authorization header
+      const response = await fetch(SLIDESHOW_DATA_URI + "/slideshows", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      setSlideshows(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const duplicateSlideshow = async () => {
+    try {
+      const token = await getTokenSilently();
+      // Send a GET request to the server and add the signed in user's
+      // access token in the Authorization header
+      const response = await fetch(SLIDESHOW_DATA_URI + "/slideshows", {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+    } catch (error) {
+      console.error(error);
+    }
+
+    getSlideshows()
+  };
 
   useEffect(() => {
-    const getSlideshows = async () => {
-      try {
-        const token = await getTokenSilently();
-        // Send a GET request to the server and add the signed in user's
-        // access token in the Authorization header
-        const response = await fetch(SLIDESHOW_DATA_URI + "/slideshows", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const responseData = await response.json();
-
-        setSlideshows(responseData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
     getSlideshows();
     setIsOpen(false);
-    setIsContextOpen(false);
     setSelectedSlideshow("")
   }, []);
 
@@ -101,8 +128,16 @@ const ShowSlideshows = () => {
                   <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
                   <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
                   <div className="card-footer"  style={cardFooterStyles} >
-                    <button style={footerButtonStyles} onClick={(e) => openContext(slideshow.Id)}><FiMoreHorizontal/></button>
+                    <button style={footerButtonStyles} onClick={show}><FiMoreHorizontal/></button>
                   </div>
+                  <Menu id={MENU_ID}>
+                    <Item id="item-1" onClick={handleItemClick}>
+                      Item 1
+                    </Item>
+                    <Item id="item-2" onClick={handleItemClick}>
+                      Item 2
+                    </Item>
+                  </Menu>
                 </div>
               </div>
             );
@@ -111,8 +146,6 @@ const ShowSlideshows = () => {
       </div>
       <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
       </Slideshow>
-      <ContextMenu isOpen={isContextOpen} slideshow={selectedSlideshow} onClose={(e) => setIsContextOpen(false)}>
-      </ContextMenu>
     </div>
   );
 };
