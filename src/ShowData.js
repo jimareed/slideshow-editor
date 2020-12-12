@@ -123,13 +123,13 @@ const ShowData = () => {
             return (
               <div className="col-sm-4" key={index}>
                 <div className="card mb-4">
-                  <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.Id)}>{d.Name}</div>
-                  <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.Id)}>{d.Description}</div>
+                  <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.ResourceId)}>{d.Name}</div>
+                  <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.ResourceId)}>{d.Description}</div>
                   <div className="card-footer"  style={cardFooterStyles} >
                     <button style={footerButtonStyles} onClick={show}><FiMoreHorizontal/></button>
                   </div>
                   <Menu id={MENU_ID}>
-                    <Item id="duplicate" onClick={(e) => duplicateData(d.Id)}>
+                    <Item id="duplicate" onClick={(e) => duplicateData(d.ResourceId)}>
                       Duplicate
                     </Item>
                   </Menu>
