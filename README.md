@@ -1,6 +1,6 @@
 # slideshow-editor
 
-Example of a simple cloud native application which includes a microservices design, containerization, authentication and authorization. Built using React, Go, Auth0 and docker. Deployed to AWS. Also requires https://github.com/jimareed/slideshow-data. Based on https://github.com/jimareed/react-auth0-login, the samples from Auth0 and the Auth0 blog: https://auth0.com/blog/authentication-in-golang/.
+Example of a cloud native application which includes authentication and authorization. Technologies include: React, Go, Auth0, Casbin, Docker and CircleCI.. Requires [slideshow-data](https://github.com/jimareed/slideshow-data). 
 
 <p  align="center">
     <img src="./images/slideshow-editor.png" alt="Slideshow Editor"/>
@@ -28,7 +28,7 @@ export REACT_APP_SLIDESHOW_DATA_URI=--insert here--
 npm start
 ```
 
-Follow the instructions to install and run the backend at: https://github.com/jimareed/auth0-react-backend
+Follow the instructions to install and run the backend [slideshow-data](https://github.com/jimareed/slideshow-data)
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
@@ -46,3 +46,8 @@ Update docker-compose.yaml with environment variable values then run docker comp
 docker-compose up -d
 docker-compose down
 ```
+
+### Sources
+- [react-auth0-login](https://github.com/jimareed/react-auth0-login)
+- [Authentication in Golang with JWTs](https://auth0.com/blog/authentication-in-golang/)
+- Auth0 Samples

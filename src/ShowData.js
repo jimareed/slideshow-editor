@@ -10,6 +10,27 @@ const MENU_ID = 'menu-1';
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
 const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
 
+const defaultData = [
+  {
+    id: 1,
+    ResourceId: "default",
+    Name: "Slideshow",
+    Description: "Overview"
+  },
+  {
+    id: 2,
+    ResourceId: "instructions",
+    Name: "Instructions",
+    Description: "Steps to use"
+  },
+  {
+    id: 3,
+    ResourceId: "emotional-intelligence",
+    Name: "Emotional Intelligence",
+    Description: "Sample slideshow"
+  }
+]
+
 let footerButtonStyles = {
   marginBottom: '15px',
   padding: '3px 8px',
@@ -49,6 +70,7 @@ const ShowData = () => {
   const {
     getTokenSilently,
     loading,
+    isAuthenticated,
     user,
   } = useAuth0();
 
@@ -58,21 +80,25 @@ const ShowData = () => {
   }
 
   const getData = async () => {
-    try {
-      const token = await getTokenSilently();
-      // Send a GET request to the server and add the signed in user's
-      // access token in the Authorization header
-      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      setData(responseData);
-    } catch (error) {
-      console.error(error);
+    if (loading || !user || !isAuthenticated) {
+      setData(defaultData)
+    } else {
+      try {
+        const token = await getTokenSilently();
+        // Send a GET request to the server and add the signed in user's
+        // access token in the Authorization header
+        const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const responseData = await response.json();
+  
+        setData(responseData);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -111,38 +137,63 @@ const ShowData = () => {
   };
 
 
-  if (loading || !user) {
-    return <div>Loading...</div>;
+  if (loading) {
+    <div></div>
   }
-
-  return (
-    <div className="container">
-      <div className="jumbotron text-center mt-5">
-        <div className="row">
-          {data.map(function (d, index) {
-            return (
-              <div className="col-sm-4" key={index}>
-                <div className="card mb-4">
-                  <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.ResourceId)}>{d.Name}</div>
-                  <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.ResourceId)}>{d.Description}</div>
-                  <div className="card-footer"  style={cardFooterStyles} >
-                    <button style={footerButtonStyles} onClick={show}><FiMoreHorizontal/></button>
+  else if (!user || !isAuthenticated) {
+    return (
+      <div className="container">
+        <div className="jumbotron text-center mt-5">
+          <div className="row">
+            {data.map(function (d, index) {
+              return (
+                <div className="col-sm-4" key={index}>
+                  <div className="card mb-4">
+                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.ResourceId)}>{d.Name}</div>
+                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.ResourceId)}>{d.Description}</div>
+                    <div className="card-footer"  style={cardFooterStyles} >
+                    </div>
                   </div>
-                  <Menu id={MENU_ID}>
-                    <Item id="duplicate" onClick={(e) => duplicateData(d.ResourceId)}>
-                      Duplicate
-                    </Item>
-                  </Menu>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
+        <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>
+        </Slideshow>
       </div>
-      <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>
-      </Slideshow>
-    </div>
-  );
+    );
+    }
+  else {
+    return (
+      <div className="container">
+        <div className="jumbotron text-center mt-5">
+          <div className="row">
+            {data.map(function (d, index) {
+              return (
+                <div className="col-sm-4" key={index}>
+                  <div className="card mb-4">
+                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.ResourceId)}>{d.Name}</div>
+                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.ResourceId)}>{d.Description}</div>
+                    <div className="card-footer"  style={cardFooterStyles} >
+                      <button style={footerButtonStyles} onClick={show}><FiMoreHorizontal/></button>
+                    </div>
+                    <Menu id={MENU_ID}>
+                      <Item id="duplicate" onClick={(e) => duplicateData(d.ResourceId)}>
+                        Duplicate
+                      </Item>
+                    </Menu>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>
+        </Slideshow>
+      </div>
+    );
+    }
 };
 
 export default ShowData;

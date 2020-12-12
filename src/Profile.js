@@ -12,7 +12,11 @@ const Profile = () => {
   if (!isAuthenticated || !user) {
     return (
       <div>
-        <p><b>Login</b> to continue.</p>
+        <p>Select a slideshow below to learn more about the application.</p>
+        <p><b>Login</b> to create your own slideshow.</p>
+        <div>
+          <ShowData />
+        </div>
       </div>
     )
   }
