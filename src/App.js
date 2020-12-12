@@ -24,7 +24,7 @@ const App = () => {
       </Navbar.Collapse>
     </Navbar>
     <Jumbotron>
-      <p>Example of a cloud native application which includes a microservices design, containerization, authentication and authorization. Built using React, Go, Auth0 and docker. Deployed to AWS.</p>
+      <p>Example of a cloud native application which includes authentication and authorization. Technologies include: React, Go, Auth0, Casbin, Docker and CircleCI.</p>
       <Profile/>
     </Jumbotron>
   </Container>

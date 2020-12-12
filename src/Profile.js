@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth0 } from "./react-auth0-spa";
-import ShowSlideshows from './ShowSlideshows';
+import ShowData from './ShowData';
 
 const Profile = () => {
   const { user, isAuthenticated, loading } = useAuth0();
@@ -21,7 +21,7 @@ const Profile = () => {
       <div>
         <p><b>Welcome {user.name}!</b> Select a slideshow below to learn more about the application. </p>
         <div>
-          <ShowSlideshows />
+          <ShowData />
         </div>
       </div>
      )

@@ -37,19 +37,14 @@ let cardFooterStyles = {
   height: '50px',
 }
 
-const ShowSlideshows = () => {
-  const [slideshows, setSlideshows] = useState([]);
+const ShowData = () => {
+  const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
-  const [selectedSlideshow, setSelectedSlideshow] = useState([]);
+  const [selectedData, setSelectedData] = useState([]);
 
   const { show } = useContextMenu({
     id: MENU_ID
   });
-
-  function handleItemClick({ event, props, triggerEvent, data }){
-    console.log("item clicked!" );
-    console.log(event.currentTarget.id);
-  }
 
   const {
     getTokenSilently,
@@ -57,17 +52,17 @@ const ShowSlideshows = () => {
     user,
   } = useAuth0();
 
-  function openSlideshow(name) {
-    setSelectedSlideshow(SLIDESHOW_URI + "/"+name);
+  function openData(name) {
+    setSelectedData(SLIDESHOW_URI + "/"+name);
     setIsOpen(true);
   }
 
-  const getSlideshows = async () => {
+  const getData = async () => {
     try {
       const token = await getTokenSilently();
       // Send a GET request to the server and add the signed in user's
       // access token in the Authorization header
-      const response = await fetch(SLIDESHOW_DATA_URI + "/slideshows", {
+      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -75,18 +70,21 @@ const ShowSlideshows = () => {
 
       const responseData = await response.json();
 
-      setSlideshows(responseData);
+      setData(responseData);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const duplicateSlideshow = async () => {
+  const duplicateData = async (dataId) => {
+
+    console.log("duplicate " + dataId)
+
     try {
       const token = await getTokenSilently();
       // Send a GET request to the server and add the signed in user's
       // access token in the Authorization header
-      const response = await fetch(SLIDESHOW_DATA_URI + "/slideshows", {
+      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -99,14 +97,14 @@ const ShowSlideshows = () => {
       console.error(error);
     }
 
-    getSlideshows()
+    getData()
   };
 
   useEffect(() => {
 
-    getSlideshows();
+    getData();
     setIsOpen(false);
-    setSelectedSlideshow("")
+    setSelectedData("")
   }, []);
 
   const action = () => {
@@ -121,21 +119,18 @@ const ShowSlideshows = () => {
     <div className="container">
       <div className="jumbotron text-center mt-5">
         <div className="row">
-          {slideshows.map(function (slideshow, index) {
+          {data.map(function (d, index) {
             return (
               <div className="col-sm-4" key={index}>
                 <div className="card mb-4">
-                  <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Name}</div>
-                  <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(slideshow.Id)}>{slideshow.Description}</div>
+                  <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.Id)}>{d.Name}</div>
+                  <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.Id)}>{d.Description}</div>
                   <div className="card-footer"  style={cardFooterStyles} >
                     <button style={footerButtonStyles} onClick={show}><FiMoreHorizontal/></button>
                   </div>
                   <Menu id={MENU_ID}>
-                    <Item id="item-1" onClick={handleItemClick}>
-                      Item 1
-                    </Item>
-                    <Item id="item-2" onClick={handleItemClick}>
-                      Item 2
+                    <Item id="duplicate" onClick={(e) => duplicateData(d.Id)}>
+                      Duplicate
                     </Item>
                   </Menu>
                 </div>
@@ -144,10 +139,10 @@ const ShowSlideshows = () => {
           })}
         </div>
       </div>
-      <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
+      <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>
       </Slideshow>
     </div>
   );
 };
 
-export default ShowSlideshows;
+export default ShowData;
