@@ -58,7 +58,7 @@ let cardFooterStyles = {
   height: '50px',
 }
 
-const ShowData = () => {
+const Content = () => {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
@@ -196,4 +196,4 @@ const ShowData = () => {
     }
 };
 
-export default ShowData;
+export default Content;
