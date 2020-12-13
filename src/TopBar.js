@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import { useAuth0 } from "./react-auth0-spa";
 import { BiFilm } from "react-icons/bi";
 
-const TopBar = () => {
+const TopBar = (props) => {
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   if (!isAuthenticated || !user) {
@@ -27,7 +27,7 @@ const TopBar = () => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="justify-content-end" style={{ width: "100%" }}>
-          <Nav.Link href="#"><BiFilm/> New</Nav.Link>
+          <Nav.Link onClick={props.newSlideshow} href="#"><BiFilm/> New</Nav.Link>
           <Nav.Link onClick={logout} href="#">Logout</Nav.Link>
         </Nav>
       </Navbar.Collapse>

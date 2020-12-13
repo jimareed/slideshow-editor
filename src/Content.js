@@ -1,35 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 import Slideshow from "./Slideshow"
-import { FiMoreHorizontal } from "react-icons/fi";
-import {Menu, Item, useContextMenu } from 'react-contexify';
-import 'react-contexify/dist/ReactContexify.css';
-
-const MENU_ID = 'menu-1';
+import { AiFillEdit } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
-const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
-
-const defaultData = [
-  {
-    id: 1,
-    ResourceId: "default",
-    Name: "Slideshow",
-    Description: "Overview"
-  },
-  {
-    id: 2,
-    ResourceId: "instructions",
-    Name: "Instructions",
-    Description: "Steps to use"
-  },
-  {
-    id: 3,
-    ResourceId: "emotional-intelligence",
-    Name: "Emotional Intelligence",
-    Description: "Sample slideshow"
-  }
-]
 
 let footerButtonStyles = {
   marginBottom: '15px',
@@ -58,83 +33,25 @@ let cardFooterStyles = {
   height: '50px',
 }
 
-const Content = () => {
-  const [data, setData] = useState([]);
+const Content = (props) => {
   const [isOpen, setIsOpen] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
 
-  const { show } = useContextMenu({
-    id: MENU_ID
-  });
-
   const {
-    getTokenSilently,
     loading,
     isAuthenticated,
     user,
   } = useAuth0();
 
-  function openData(name) {
+  function openSlideshow(name) {
     setSelectedData(SLIDESHOW_URI + "/"+name);
     setIsOpen(true);
   }
 
-  const getData = async () => {
-    if (loading || !user || !isAuthenticated) {
-      setData(defaultData)
-    } else {
-      try {
-        const token = await getTokenSilently();
-        // Send a GET request to the server and add the signed in user's
-        // access token in the Authorization header
-        const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        const responseData = await response.json();
-  
-        setData(responseData);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  const duplicateData = async (dataId) => {
-
-    console.log("duplicate " + dataId)
-
-    try {
-      const token = await getTokenSilently();
-      // Send a GET request to the server and add the signed in user's
-      // access token in the Authorization header
-      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-    } catch (error) {
-      console.error(error);
-    }
-
-    getData()
-  };
-
   useEffect(() => {
-
-    getData();
     setIsOpen(false);
     setSelectedData("")
   }, []);
-
-  const action = () => {
-  };
 
 
   if (loading) {
@@ -145,12 +62,12 @@ const Content = () => {
       <div className="container">
         <div className="jumbotron text-center mt-5">
           <div className="row">
-            {data.map(function (d, index) {
+            {props.data.map(function (d, index) {
               return (
                 <div className="col-sm-4" key={index}>
                   <div className="card mb-4">
-                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.ResourceId)}>{d.Name}</div>
-                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.ResourceId)}>{d.Description}</div>
+                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Name}</div>
+                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Description}</div>
                     <div className="card-footer"  style={cardFooterStyles} >
                     </div>
                   </div>
@@ -169,20 +86,16 @@ const Content = () => {
       <div className="container">
         <div className="jumbotron text-center mt-5">
           <div className="row">
-            {data.map(function (d, index) {
+            {props.data.map(function (d, index) {
               return (
                 <div className="col-sm-4" key={index}>
                   <div className="card mb-4">
-                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openData(d.ResourceId)}>{d.Name}</div>
-                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openData(d.ResourceId)}>{d.Description}</div>
+                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Name}</div>
+                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Description}</div>
                     <div className="card-footer"  style={cardFooterStyles} >
-                      <button style={footerButtonStyles} onClick={show}><FiMoreHorizontal/></button>
+                      <button style={footerButtonStyles}><AiFillDelete/></button>
+                      <button style={footerButtonStyles}><AiFillEdit/></button>
                     </div>
-                    <Menu id={MENU_ID}>
-                      <Item id="duplicate" onClick={(e) => duplicateData(d.ResourceId)}>
-                        Duplicate
-                      </Item>
-                    </Menu>
                   </div>
                 </div>
               );
