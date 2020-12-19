@@ -38,6 +38,7 @@ const Content = (props) => {
   const [selectedData, setSelectedData] = useState([]);
 
   const {
+    getTokenSilently,
     loading,
     isAuthenticated,
     user,
@@ -53,6 +54,30 @@ const Content = (props) => {
     setSelectedData("")
   }, []);
 
+  const updateData = async (id, description) => {
+    try {
+      const token = await getTokenSilently();
+      // Send a POST request to the Go server for the selected product
+      // with the vote type
+      const response = await fetch(
+        `http://localhost:8080/data/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ description: description }),
+        }
+      );
+      // Since this is just for demonstration and we're not actually
+      // persisting this data, we'll just set the product vote status here
+      // if the product exists
+      if (response.ok) {
+      } else console.log(response.status);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (loading) {
     <div></div>
@@ -94,7 +119,9 @@ const Content = (props) => {
                     <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Description}</div>
                     <div className="card-footer"  style={cardFooterStyles} >
                       <button style={footerButtonStyles}><AiFillDelete/></button>
-                      <button style={footerButtonStyles}><AiFillEdit/></button>
+                      {d.Permissions.includes("write") && (
+                        <button onClick={() => updateData(d.Id, d.Description)} style={footerButtonStyles}><AiFillEdit/></button>
+                      )}
                     </div>
                   </div>
                 </div>

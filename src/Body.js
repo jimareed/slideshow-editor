@@ -18,8 +18,7 @@ const Body = (props) => {
     return (
       <Jumbotron>
         <div>
-          <p>Select a slideshow below to learn more about <b>Slideshow Editor</b>.</p>
-          <p><b>Login</b> to create your own slideshow.</p>
+          <p>Select a slideshow below or <b>Login</b> to create your own slideshow.</p>
           <div>
             <Content data={props.data}/>
           </div>
@@ -31,8 +30,7 @@ const Body = (props) => {
   return (
     <Jumbotron>
         <div>
-          <p><b>Welcome {user.name}!</b> Select a slideshow below to learn more about <b>Slideshow Editor</b>. </p>
-          <p>Select <b>New</b> to create your own slideshow.</p>
+          <p><b>Welcome {user.name}!</b> Select a slideshow below or select <b>New</b> to create your own slideshow.</p>
           <div>
             <Content  data={props.data} />
           </div>
