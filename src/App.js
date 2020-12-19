@@ -12,19 +12,22 @@ const defaultData = [
     id: 1,
     ResourceId: "default",
     Name: "Slideshow",
-    Description: "Overview"
+    Description: "Overview",
+    Permissions: ""
   },
   {
     id: 2,
     ResourceId: "instructions",
     Name: "Instructions",
-    Description: "Steps to use"
+    Description: "Steps to use",
+    Permissions: ""
   },
   {
     id: 3,
     ResourceId: "emotional-intelligence",
     Name: "Emotional Intelligence",
-    Description: "Sample slideshow"
+    Description: "Sample slideshow",
+    Permissions: ""
   }
 ]
 
