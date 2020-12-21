@@ -1,10 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
 import Slideshow from "./Slideshow"
 import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
+import { CgAddR } from "react-icons/cg";
 
+const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
+
+const defaultData = [
+  {
+    id: 1,
+    ResourceId: "default",
+    Name: "Slideshow",
+    Description: "Overview",
+    Permissions: ""
+  },
+  {
+    id: 2,
+    ResourceId: "instructions",
+    Name: "Instructions",
+    Description: "Steps to use",
+    Permissions: ""
+  },
+  {
+    id: 3,
+    ResourceId: "emotional-intelligence",
+    Name: "Emotional Intelligence",
+    Description: "Sample slideshow",
+    Permissions: ""
+  }
+]
 
 let footerButtonStyles = {
   marginBottom: '15px',
@@ -33,7 +59,18 @@ let cardFooterStyles = {
   height: '50px',
 }
 
+let newBodyStyles = {
+  cursor: 'pointer',
+  height: '100px',
+}
+
+let newStyles = {
+  cursor: 'pointer',
+  height: '50px',
+}
+
 const Content = (props) => {
+  const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
 
@@ -50,17 +87,41 @@ const Content = (props) => {
   }
 
   useEffect(() => {
+
+    if (!user || !isAuthenticated) {
+      setData(defaultData)
+    } else {
+      getData();    
+    }
     setIsOpen(false);
     setSelectedData("")
   }, []);
+
+  const getData = async () => {
+    try {
+      const token = await getTokenSilently();
+      // Send a GET request to the server and add the signed in user's
+      // access token in the Authorization header
+      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      setData(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const updateData = async (id, description) => {
     try {
       const token = await getTokenSilently();
       // Send a POST request to the Go server for the selected product
       // with the vote type
-      const response = await fetch(
-        `http://localhost:8080/data/${id}`,
+      const response = await fetch(SLIDESHOW_DATA_URI + `/data/${id}`,
         {
           method: "PUT",
           headers: {
@@ -77,6 +138,8 @@ const Content = (props) => {
     } catch (error) {
       console.error(error);
     }
+
+    getData()
   };
 
   const deleteData = async (id, description) => {
@@ -84,8 +147,7 @@ const Content = (props) => {
       const token = await getTokenSilently();
       // Send a POST request to the Go server for the selected product
       // with the vote type
-      const response = await fetch(
-        `http://localhost:8080/data/${id}`,
+      const response = await fetch(SLIDESHOW_DATA_URI + `/data/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -101,42 +163,41 @@ const Content = (props) => {
     } catch (error) {
       console.error(error);
     }
+
+    getData()
   };
 
+  const newData = async () => {
 
+    try {
+      const token = await getTokenSilently();
+      // Send a GET request to the server and add the signed in user's
+      // access token in the Authorization header
+      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+    } catch (error) {
+      console.error(error);
+    }
+
+    getData()
+  };
+  
   if (loading) {
     <div></div>
   }
-  else if (!user || !isAuthenticated) {
-    return (
-      <div className="container">
-        <div className="jumbotron text-center mt-5">
-          <div className="row">
-            {props.data.map(function (d, index) {
-              return (
-                <div className="col-sm-4" key={index}>
-                  <div className="card mb-4">
-                    <div className="card-header" style={cardHeaderStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Name}</div>
-                    <div className="card-body" style={cardBodyStyles} onClick={(e) => openSlideshow(d.ResourceId)}>{d.Description}</div>
-                    <div className="card-footer"  style={cardFooterStyles} >
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>
-        </Slideshow>
-      </div>
-    );
-    }
   else {
     return (
       <div className="container">
         <div className="jumbotron text-center mt-5">
           <div className="row">
-            {props.data.map(function (d, index) {
+            {data.map(function (d, index) {
               return (
                 <div className="col-sm-4" key={index}>
                   <div className="card mb-4">
@@ -154,6 +215,15 @@ const Content = (props) => {
                 </div>
               );
             })}
+            {isAuthenticated && user && (
+              <div className="col-sm-4" key="new-item">
+                <div className="card mb-4">
+                <div className="card-header" style={cardHeaderStyles} onClick={(e) => newData()}></div>
+                  <div className="card-body" style={newBodyStyles} onClick={(e) => newData()}><h1><CgAddR/></h1></div>
+                  <div className="card-footer" style={newStyles} onClick={(e) => newData()}></div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>

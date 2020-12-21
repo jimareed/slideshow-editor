@@ -2,6 +2,7 @@ import React from "react";
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import { useAuth0 } from "./react-auth0-spa";
 import Content from './Content';
+import { CgAddR } from "react-icons/cg";
 
 const Body = (props) => {
   const { user, isAuthenticated, loading } = useAuth0();
@@ -20,7 +21,7 @@ const Body = (props) => {
         <div>
           <p>Select a slideshow below or <b>Login</b> to create your own slideshow.</p>
           <div>
-            <Content data={props.data}/>
+            <Content/>
           </div>
         </div>
       </Jumbotron>
@@ -30,9 +31,9 @@ const Body = (props) => {
   return (
     <Jumbotron>
         <div>
-          <p><b>Welcome {user.name}!</b> Select a slideshow below or select <b>New</b> to create your own slideshow.</p>
+          <p><b>Welcome {user.name}!</b> Select a slideshow below or select <b>New <CgAddR/></b> to create your own slideshow.</p>
           <div>
-            <Content  data={props.data} />
+            <Content />
           </div>
         </div>
     </Jumbotron>
