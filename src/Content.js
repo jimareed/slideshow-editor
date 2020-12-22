@@ -4,6 +4,9 @@ import Slideshow from "./Slideshow"
 import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
 import { CgAddR } from "react-icons/cg";
+import EditData from "./EditData"
+import { Modal } from 'react-bootstrap'
+
 
 const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
@@ -72,7 +75,9 @@ let newStyles = {
 const Content = (props) => {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
-  const [selectedData, setSelectedData] = useState([]);
+  const [isEditOpen, setIsEditOpen] = useState([]);
+  const [selectedSlideshow, setSelectedSlideshow] = useState([]);
+  const [selectedDataItem, setSelectedDataItem] = useState([]);
 
   const {
     getTokenSilently,
@@ -81,21 +86,22 @@ const Content = (props) => {
     user,
   } = useAuth0();
 
-  function openSlideshow(name) {
-    setSelectedData(SLIDESHOW_URI + "/"+name);
-    setIsOpen(true);
+  function openEditDialog(index) {
+    setSelectedDataItem(data[index])
+    setIsEditOpen(true);
   }
 
-  useEffect(() => {
+  const handleClose = () => setIsEditOpen(false);
 
-    if (!user || !isAuthenticated) {
-      setData(defaultData)
-    } else {
-      getData();    
-    }
-    setIsOpen(false);
-    setSelectedData("")
-  }, []);
+  const onUpdate = (dataItem) => {
+    updateData(dataItem.Id, dataItem.Name, dataItem.Description)
+    setIsEditOpen(false);
+  };
+
+  function openSlideshow(name) {
+    setSelectedSlideshow(SLIDESHOW_URI + "/"+name);
+    setIsOpen(true);
+  }
 
   const getData = async () => {
     try {
@@ -116,7 +122,19 @@ const Content = (props) => {
     }
   };
 
-  const updateData = async (id, description) => {
+  useEffect(() => {
+
+    if (!user || !isAuthenticated) {
+      setData(defaultData)
+    } else {
+      getData();    
+    }
+    setIsOpen(false);
+    setIsEditOpen(false);
+    setSelectedSlideshow("")
+  }, [isAuthenticated, user]);
+
+  const updateData = async (id, name, description) => {
     try {
       const token = await getTokenSilently();
       // Send a POST request to the Go server for the selected product
@@ -127,7 +145,7 @@ const Content = (props) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ description: description }),
+          body: JSON.stringify({ name: name, description: description }),
         }
       );
       // Since this is just for demonstration and we're not actually
@@ -138,8 +156,6 @@ const Content = (props) => {
     } catch (error) {
       console.error(error);
     }
-
-    getData()
   };
 
   const deleteData = async (id, description) => {
@@ -180,7 +196,7 @@ const Content = (props) => {
         },
       });
 
-      const responseData = await response.json();
+      await response.json();
 
     } catch (error) {
       console.error(error);
@@ -208,7 +224,7 @@ const Content = (props) => {
                         <button onClick={() => deleteData(d.Id)} style={footerButtonStyles}><AiFillDelete/></button>
                       )}
                       {d.Permissions.includes("write") && (
-                        <button onClick={() => updateData(d.Id, d.Description)} style={footerButtonStyles}><AiFillEdit/></button>
+                        <button onClick={() => openEditDialog(index)} style={footerButtonStyles}><AiFillEdit/></button>
                       )}
                     </div>
                   </div>
@@ -226,7 +242,17 @@ const Content = (props) => {
             )}
           </div>
         </div>
-        <Slideshow isOpen={isOpen} slideshow={selectedData} onClose={(e) => setIsOpen(false)}>
+        <Modal show={isEditOpen} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Slideshow</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EditData item={selectedDataItem} onUpdate={onUpdate} />
+        </Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+        </Modal>
+        <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
         </Slideshow>
       </div>
     );
