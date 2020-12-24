@@ -4,7 +4,9 @@ import Slideshow from "./Slideshow"
 import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
 import { CgAddR } from "react-icons/cg";
+import { TiEdit } from "react-icons/ti";
 import EditData from "./EditData"
+import EditSpec from "./EditSpec"
 import { Modal } from 'react-bootstrap'
 
 
@@ -76,6 +78,7 @@ const Content = (props) => {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
   const [isEditOpen, setIsEditOpen] = useState([]);
+  const [isSpecOpen, setIsSpecOpen] = useState([]);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
   const [selectedDataItem, setSelectedDataItem] = useState([]);
 
@@ -91,11 +94,21 @@ const Content = (props) => {
     setIsEditOpen(true);
   }
 
+  function openSpecDialog(index) {
+    setSelectedDataItem(data[index])
+    setIsSpecOpen(true);
+  }
+
   const handleClose = () => setIsEditOpen(false);
+  const handleSpecClose = () => setIsSpecOpen(false);
 
   const onUpdate = (dataItem) => {
     updateData(dataItem.Id, dataItem.Name, dataItem.Description)
     setIsEditOpen(false);
+  };
+
+  const onSpecUpdate = () => {
+    setIsSpecOpen(false);
   };
 
   function openSlideshow(name) {
@@ -131,6 +144,7 @@ const Content = (props) => {
     }
     setIsOpen(false);
     setIsEditOpen(false);
+    setIsSpecOpen(false);
     setSelectedSlideshow("")
   }, [isAuthenticated, user]);
 
@@ -226,6 +240,9 @@ const Content = (props) => {
                       {d.Permissions.includes("write") && (
                         <button onClick={() => openEditDialog(index)} style={footerButtonStyles}><AiFillEdit/></button>
                       )}
+                      {d.Permissions.includes("write") && (
+                        <button onClick={() => openSpecDialog(index)} style={footerButtonStyles}><TiEdit/></button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -244,10 +261,20 @@ const Content = (props) => {
         </div>
         <Modal show={isEditOpen} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Slideshow</Modal.Title>
+          <Modal.Title>Edit Slideshow Properties</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EditData item={selectedDataItem} onUpdate={onUpdate} />
+        </Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+        </Modal>
+        <Modal show={isSpecOpen} onHide={handleSpecClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Slideshow Specification</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EditSpec item={selectedDataItem} onUpdate={onSpecUpdate} />
         </Modal.Body>
         <Modal.Footer>
         </Modal.Footer>
