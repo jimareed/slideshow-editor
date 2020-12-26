@@ -8,12 +8,11 @@ services:
     networks:
       - default
     environment:
-      - REACT_APP_DOMAIN=dev-wy5twb8c.us.auth0.com
-      - REACT_APP_CLIENTID=tBBA6PT4T0yAYQcBo1iSkfW6mqXYvr9O
-      - REACT_APP_AUDIENCE=http://localhost:3000/api/app
-      - REACT_APP_SLIDESHOW_URI=http://jimareed.com:8080
-      - REACT_APP_SLIDESHOW_DATA_URI=http://jimareed.com:8010
-
+      - REACT_APP_DOMAIN=-- insert here --
+      - REACT_APP_CLIENTID=-- insert here --
+      - REACT_APP_AUDIENCE=-- insert here --
+      - REACT_APP_SLIDESHOW_URI=-- insert here --
+      - REACT_APP_SLIDESHOW_DATA_URI=-- insert here --
       
 networks:
     default:
