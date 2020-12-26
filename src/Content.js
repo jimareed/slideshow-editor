@@ -112,7 +112,7 @@ const Content = (props) => {
   };
 
   function openSlideshow(name) {
-    setSelectedSlideshow(SLIDESHOW_URI + "/"+name);
+    setSelectedSlideshow(SLIDESHOW_URI + "/slideshows/"+name);
     setIsOpen(true);
   }
 
