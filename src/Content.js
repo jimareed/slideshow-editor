@@ -203,18 +203,37 @@ const Content = (props) => {
       const token = await getTokenSilently();
       // Send a GET request to the server and add the signed in user's
       // access token in the Authorization header
-      const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
+      const response = await fetch(SLIDESHOW_URI + "/specs", {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      await response.json();
+      let responseBody = await response.json();
 
+      try {
+        const token = await getTokenSilently();
+        // Send a GET request to the server and add the signed in user's
+        // access token in the Authorization header
+        const response = await fetch(SLIDESHOW_DATA_URI + "/data", {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ resourceId: responseBody.id }),
+        });
+  
+        await response.json();
+  
+      } catch (error) {
+        console.error(error);
+      }
+  
     } catch (error) {
       console.error(error);
     }
+
 
     getData()
   };

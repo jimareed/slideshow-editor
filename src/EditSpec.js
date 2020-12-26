@@ -70,7 +70,7 @@ const EditSpec = (props) => {
 
       <Form.Group controlId="formBasicEdit">
         <Form.Label>Specification</Form.Label>
-        <Form.Control
+        <Form.Control  as="textarea" rows={10}
           placeholder="Specification"
           value={spec}
           onChange={(e) => setSpec(e.target.value)}
