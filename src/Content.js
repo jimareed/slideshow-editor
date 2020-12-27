@@ -7,6 +7,7 @@ import { CgAddR } from "react-icons/cg";
 import { TiEdit } from "react-icons/ti";
 import EditData from "./EditData"
 import EditSpec from "./EditSpec"
+import Editor from "./editor/Editor"
 import { Modal } from 'react-bootstrap'
 
 
@@ -77,6 +78,7 @@ let newStyles = {
 const Content = (props) => {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
+  const [isEditorOpen, setIsEditorOpen] = useState([]);
   const [isEditOpen, setIsEditOpen] = useState([]);
   const [isSpecOpen, setIsSpecOpen] = useState([]);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
@@ -116,6 +118,11 @@ const Content = (props) => {
     setIsOpen(true);
   }
 
+  function openEditor(index) {
+    setSelectedDataItem(data[index])
+    setIsEditorOpen(true);
+  }
+
   const getData = async () => {
     try {
       const token = await getTokenSilently();
@@ -143,6 +150,7 @@ const Content = (props) => {
       getData();    
     }
     setIsOpen(false);
+    setIsEditorOpen(false);
     setIsEditOpen(false);
     setIsSpecOpen(false);
     setSelectedSlideshow("")
@@ -262,6 +270,9 @@ const Content = (props) => {
                       {d.Permissions.includes("write") && (
                         <button onClick={() => openSpecDialog(index)} style={footerButtonStyles}><TiEdit/></button>
                       )}
+                      {d.Permissions.includes("write") && (
+                        <button onClick={() => openEditor(index)} style={footerButtonStyles}><TiEdit/></button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -300,6 +311,8 @@ const Content = (props) => {
         </Modal>
         <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
         </Slideshow>
+        <Editor isOpen={isEditorOpen} item={selectedDataItem} onClose={(e) => setIsEditorOpen(false)}>
+        </Editor>
       </div>
     );
     }
