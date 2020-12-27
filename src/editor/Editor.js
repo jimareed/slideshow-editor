@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Canvas from "./Canvas";
 
 const defaultSlideshow = {
     width: 1024,
@@ -7,7 +8,7 @@ const defaultSlideshow = {
     rectHeight:120,
     shapes: [
         {
-        x: 150,
+        x: 250,
         y: 100,
         width: 180,
         height: 120,
@@ -16,8 +17,19 @@ const defaultSlideshow = {
         size: 0,
         style: "",
         slide: ""
-        }
-    ]
+        },
+        {
+            x: 600,
+            y: 200,
+            width: 180,
+            height: 120,
+            type: "rect",
+            desc: "",
+            size: 0,
+            style: "",
+            slide: ""
+            }
+        ]
 }
   
 let editorStyles = {
@@ -57,6 +69,7 @@ class Editor extends Component {
         let dialog = (
           <div style={editorStyles}>
             <button style={editorCloseButtonStyles} onClick={this.props.onClose}>x</button>
+            <Canvas slideshow={defaultSlideshow} />
           </div>
         )
 
