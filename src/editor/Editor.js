@@ -1,36 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Canvas from "./Canvas";
+import { useAuth0 } from "../react-auth0-spa";
 
-const defaultSlideshow = {
-    width: 1024,
-    height:768,
-    rectWidth:180,
-    rectHeight:120,
-    shapes: [
-        {
-        x: 250,
-        y: 100,
-        width: 180,
-        height: 120,
-        type: "rect",
-        desc: "",
-        size: 0,
-        style: "",
-        slide: ""
-        },
-        {
-            x: 600,
-            y: 200,
-            width: 180,
-            height: 120,
-            type: "rect",
-            desc: "",
-            size: 0,
-            style: "",
-            slide: ""
-            }
-        ]
-}
   
 let editorStyles = {
     width: '1024px',
@@ -63,28 +34,147 @@ let editorCloseButtonStyles = {
     alignSelf: 'flex-end'
 }
 
-class Editor extends Component {
-    
-    render() {
-        let dialog = (
-          <div style={editorStyles}>
-            <button style={editorCloseButtonStyles} onClick={this.props.onClose}>x</button>
-            <Canvas slideshow={defaultSlideshow} />
-          </div>
-        )
 
-        if (! this.props.isOpen) {
-            dialog = null;
+const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
+
+
+const Editor = (props) => {
+
+  const [slideshow, setSlideshow] = useState({
+    width: 1024,
+    height:768,
+    rectWidth:180,
+    rectHeight:120,
+    shapes: []
+  });
+
+  const {
+    getTokenSilently,
+  } = useAuth0();
+
+  useEffect(() => {
+    getSpec()
+  }, [props]);
+
+
+  const getSpec = async () => {
+    try {
+      const token = await getTokenSilently();
+      // Send a GET request to the server and add the signed in user's
+      // access token in the Authorization header
+      const response = await fetch(SLIDESHOW_URI + "/specs/" + props.item.ResourceId, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const responseData = await response.json();
+  
+      if (responseData.specification == "") {
+        setSlideshow({
+          width: 1024,
+          height:768,
+          rectWidth:180,
+          rectHeight:120,
+          shapes: []
+        })
+      } else {
+        setSlideshow(JSON.parse(responseData.specification));
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const updateSpec = async (spec) => {
+    try {
+      const token = await getTokenSilently();
+      // Send a POST request to the Go server for the selected product
+      // with the vote type
+      const response = await fetch(SLIDESHOW_URI + `/specs/` + props.item.ResourceId,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ id: "1", specification: spec }),
         }
+      );
+      // Since this is just for demonstration and we're not actually
+      // persisting this data, we'll just set the product vote status here
+      // if the product exists
+      if (response.ok) {
+      } else console.log(response.status);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  function removeShape(index) {
 
-        return (
-            <div>
-                {dialog}
-            </div>
-
-        )
+    var s = {
+      width: 1024,
+      height:768,
+      rectWidth:180,
+      rectHeight:120,
+      shapes: []
     }
 
+    slideshow.shapes.forEach(function (shape, i) { 
+      if (index !== i) {
+        s.shapes.unshift(shape)
+      }
+    })
+
+    return s
+
+  }
+
+  function addShape(shape) {
+
+    var s = {
+      width: 1024,
+      height:768,
+      rectWidth:180,
+      rectHeight:120,
+      shapes: []
+    }
+
+    slideshow.shapes.forEach(function (sh, i) { 
+      s.shapes.unshift(sh)
+    })
+
+    s.shapes.unshift(shape)
+    return s
+
+  }
+
+  function onUpdate(operation, shape, index) {
+    if (operation === "add") {
+      setSlideshow(addShape(shape))
+    } else {
+      setSlideshow(removeShape(index))
+    }
+  }
+
+  function onClose() {
+
+    updateSpec(JSON.stringify(slideshow))
+
+    props.onClose()
+  }
+
+  return (
+      <>
+        {props.isOpen && (
+          <div style={editorStyles}>
+            <button style={editorCloseButtonStyles} onClick={onClose}>x</button>
+            <Canvas slideshow={slideshow} onUpdate={onUpdate}/>
+          </div>
+        )}
+      </>
+    );
 }
 
 export default Editor;

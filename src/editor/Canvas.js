@@ -4,10 +4,44 @@ import React from "react";
 const Canvas = (props) => {
 
   const onRectClick = (index) => {
+
+    props.onUpdate("remove", {}, index)
+  };  
+
+  const getRelativePosition = (e, rectWidth, rectHeight) => {
+    var canvas = document.getElementById('editor-canvas');
+    var clientRect = canvas.getBoundingClientRect();
+
+    return { x: e.clientX - clientRect.x - rectWidth/2, y: e.clientY - clientRect.y - rectHeight/2}
+  }
+
+  const onCanvasClick = (e) => {
+
+  
+    var pos = getRelativePosition(e, 180, 120)
+
+    var shape = {
+      x: pos.x,
+      y: pos.y,
+      width: 180,
+      height: 120,
+      type: "rect",
+      desc: "",
+      size: 0,
+      style: "",
+      slide: ""
+    }
+
+    console.log(e)
+
+    props.onUpdate("add", shape, 0)
   };  
 
   return (
     <svg width="1024" height="768" >
+      <rect x="0" y="0" id="editor-canvas" width="1024" height="768" stroke="white" fill="transparent" strokeWidth="0"
+              onClick={(e) => onCanvasClick(e)} 
+      />
       {props.slideshow.shapes.map(function (s, index) {
         return (
           <rect x={s.x} y={s.y} id={index} width={s.width} height={s.height} stroke="black" fill="transparent" strokeWidth="4"
@@ -15,6 +49,13 @@ const Canvas = (props) => {
           />
         );
       })}
+        {props.slideshow.shapes.length === 0 && (
+          <>
+            <text x="50%" y="24vh" stroke="lightgrey" textAnchor="middle" fill="lightgrey" fontWeight="2" fontSize="20" onClick={(e) => onCanvasClick(e)} >click on the canvas to add a block</text>
+            <text x="50%" y="28vh" stroke="lightgrey" textAnchor="middle" fill="lightgrey" fontWeight="5" fontSize="20" onClick={(e) => onCanvasClick(e)} >click on a block to delete it</text>
+            <text x="50%" y="32vh" stroke="lightgrey" textAnchor="middle" fill="lightgrey" fontWeight="5" fontSize="20" onClick={(e) => onCanvasClick(e)} >use arrows to connect blocks</text>
+          </>
+        )}     
 
     </svg>
   );
