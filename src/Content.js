@@ -4,7 +4,6 @@ import Slideshow from "./Slideshow"
 import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
 import { CgAddR } from "react-icons/cg";
-import { TiEdit } from "react-icons/ti";
 import EditData from "./EditData"
 import Editor from "./editor/Editor"
 import { Modal } from 'react-bootstrap'
@@ -76,9 +75,9 @@ let newStyles = {
 
 const Content = (props) => {
   const [data, setData] = useState([]);
-  const [isOpen, setIsOpen] = useState([]);
-  const [isEditorOpen, setIsEditorOpen] = useState([]);
-  const [isEditOpen, setIsEditOpen] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
   const [selectedDataItem, setSelectedDataItem] = useState([]);
 
@@ -98,7 +97,6 @@ const Content = (props) => {
 
   const onUpdate = (dataItem) => {
     updateData(dataItem.Id, dataItem.Name, dataItem.Description)
-    setIsEditOpen(false);
   };
 
   function openSlideshow(name) {
@@ -161,6 +159,7 @@ const Content = (props) => {
       // persisting this data, we'll just set the product vote status here
       // if the product exists
       if (response.ok) {
+        getData()
       } else console.log(response.status);
     } catch (error) {
       console.error(error);
@@ -252,10 +251,7 @@ const Content = (props) => {
                         <button onClick={() => deleteData(d.Id)} style={footerButtonStyles}><AiFillDelete/></button>
                       )}
                       {d.Permissions.includes("write") && (
-                        <button onClick={() => openEditDialog(index)} style={footerButtonStyles}><AiFillEdit/></button>
-                      )}
-                      {d.Permissions.includes("write") && (
-                        <button onClick={() => openEditor(index)} style={footerButtonStyles}><TiEdit/></button>
+                        <button onClick={() => openEditor(index)} style={footerButtonStyles}><AiFillEdit/></button>
                       )}
                     </div>
                   </div>

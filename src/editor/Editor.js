@@ -209,13 +209,13 @@ const Editor = (props) => {
 
     updateSpec(JSON.stringify(slideshow))
 
-    if (props.item.Name !== settings.name || props.item.Description !== settings.description) {
+    if ((props.item.Name !== settings.name) || (props.item.Description !== settings.description)) {
       var item = {
-        Id: props.item.id,
+        Id: props.item.Id,
         Name: settings.name,
         Description: settings.description
       }
-
+      console.log(item)
       props.onUpdate(item)
     }
 
