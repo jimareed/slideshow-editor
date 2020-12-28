@@ -15,21 +15,21 @@ const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || ""
 
 const defaultData = [
   {
-    id: 1,
+    Id: 1,
     ResourceId: "default",
     Name: "Slideshow",
     Description: "Overview",
     Permissions: ""
   },
   {
-    id: 2,
+    Id: 2,
     ResourceId: "instructions",
     Name: "Instructions",
     Description: "Steps to use",
     Permissions: ""
   },
   {
-    id: 3,
+    Id: 3,
     ResourceId: "emotional-intelligence",
     Name: "Emotional Intelligence",
     Description: "Sample slideshow",
@@ -285,7 +285,7 @@ const Content = (props) => {
         </Modal>
         <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
         </Slideshow>
-        <Editor isOpen={isEditorOpen} item={selectedDataItem} onClose={(e) => setIsEditorOpen(false)}>
+        <Editor isOpen={isEditorOpen} onUpdate={onUpdate} item={selectedDataItem} onClose={(e) => setIsEditorOpen(false)}>
         </Editor>
       </div>
     );

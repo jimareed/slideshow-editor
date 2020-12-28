@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Canvas from "./Canvas";
 import Properties from "./Properties";
+import Settings from "./Settings";
 import { useAuth0 } from "../react-auth0-spa";
 import { TiEdit } from "react-icons/ti";
 import { BsArrowUpRight } from "react-icons/bs"
 import { BiRectangle } from "react-icons/bi"
+import { FiSettings } from "react-icons/fi";
 import { Container, Row, Col, Button, ButtonGroup } from "react-bootstrap"
 
 
@@ -40,19 +42,6 @@ let editorCloseButtonStyles = {
   alignSelf: 'flex-end'
 }
 
-let editorToolbarButtonStyles = {
-  marginBottom: '15px',
-  padding: '3px 8px',
-  cursor: 'pointer',
-  borderRadius: '50%',
-  backgroundColor: '#FFFFFF',
-  border: 'none',
-  width: '30px',
-  height: '30px',
-  fontWeight: 'bold',
-  alignSelf: 'center'
-}
-
 const SLIDESHOW_URI = process.env.REACT_APP_SLIDESHOW_URI || "" 
 
 
@@ -61,6 +50,7 @@ const Editor = (props) => {
   const [isRectMode, setIsRectMode] = useState(true);
   const [isArrowMode, setIsArrowMode] = useState(false);
   const [isPropertiesMode, setIsPropertiesMode] = useState(false);
+  const [isSettingsMode, setIsSettingsMode] = useState(false);
 
   const [slideshow, setSlideshow] = useState({
     width: 1024,
@@ -70,6 +60,11 @@ const Editor = (props) => {
     shapes: []
   });
 
+  const [settings, setSettings] = useState({
+    name: "",
+    description:""
+  });
+
   const {
     getTokenSilently,
   } = useAuth0();
@@ -77,6 +72,7 @@ const Editor = (props) => {
   useEffect(() => {
     getSpec()
     setMode("rect")
+    setSettings({ name: props.item.Name, description: props.item.Description })
   }, [props]);
 
 
@@ -159,14 +155,22 @@ const Editor = (props) => {
       setIsRectMode(true)
       setIsArrowMode(false)
       setIsPropertiesMode(false)
+      setIsSettingsMode(false)
     } else if (mode === "arrow") {
       setIsRectMode(false)
       setIsArrowMode(true)
       setIsPropertiesMode(false)  
+      setIsSettingsMode(false)
+    } else if (mode === "settings") {
+      setIsRectMode(false)
+      setIsArrowMode(false)
+      setIsPropertiesMode(false)  
+      setIsSettingsMode(true)
     } else {
       setIsRectMode(false)
       setIsArrowMode(false)
       setIsPropertiesMode(true)
+      setIsSettingsMode(false)
     }
   }
 
@@ -189,9 +193,11 @@ const Editor = (props) => {
 
   }
 
-  function onUpdate(operation, shape, spec, index) {
+  function onUpdate(operation, shape, settings, spec, index) {
     if (operation === "add") {
       setSlideshow(addShape(shape))
+    } else if (operation === "updateSettings") {
+      setSettings(settings)
     } else if (operation === "updateSpec") {
       setSlideshow(JSON.parse(spec));
     } else {
@@ -202,6 +208,16 @@ const Editor = (props) => {
   function onClose() {
 
     updateSpec(JSON.stringify(slideshow))
+
+    if (props.item.Name !== settings.name || props.item.Description !== settings.description) {
+      var item = {
+        Id: props.item.id,
+        Name: settings.name,
+        Description: settings.description
+      }
+
+      props.onUpdate(item)
+    }
 
     props.onClose()
   }
@@ -222,6 +238,7 @@ const Editor = (props) => {
                       <Button onClick={ () => setMode("rect") } variant="primary"><BiRectangle/></Button>
                       <Button onClick={ () => setMode("arrow") }variant="light"><BsArrowUpRight/></Button>
                       <Button onClick={ () => setMode("properties") }variant="light"><TiEdit/></Button>
+                      <Button onClick={ () => setMode("settings") }variant="light"><FiSettings/></Button>
                     </ButtonGroup>
                   )}
                   {isArrowMode && (
@@ -229,6 +246,7 @@ const Editor = (props) => {
                       <Button onClick={ () => setMode("rect") }variant="light"><BiRectangle/></Button>
                       <Button onClick={ () => setMode("arrow") }variant="primary"><BsArrowUpRight/></Button>
                       <Button onClick={ () => setMode("properties") }variant="light"><TiEdit/></Button>
+                      <Button onClick={ () => setMode("settings") }variant="light"><FiSettings/></Button>
                     </ButtonGroup>
                   )}
                   {isPropertiesMode && (
@@ -236,6 +254,15 @@ const Editor = (props) => {
                       <Button onClick={ () => setMode("rect") }variant="light"><BiRectangle/></Button>
                       <Button onClick={ () => setMode("arrow") }variant="light"><BsArrowUpRight/></Button>
                       <Button onClick={ () => setMode("properties") }variant="primary"><TiEdit/></Button>
+                      <Button onClick={ () => setMode("settings") }variant="light"><FiSettings/></Button>
+                    </ButtonGroup>
+                  )}
+                  {isSettingsMode && (
+                    <ButtonGroup>
+                      <Button onClick={ () => setMode("rect") }variant="light"><BiRectangle/></Button>
+                      <Button onClick={ () => setMode("arrow") }variant="light"><BsArrowUpRight/></Button>
+                      <Button onClick={ () => setMode("properties") }variant="light"><TiEdit/></Button>
+                      <Button onClick={ () => setMode("settings") }variant="primary"><FiSettings/></Button>
                     </ButtonGroup>
                   )}
                 </Col>
@@ -245,11 +272,14 @@ const Editor = (props) => {
               </Row>
               <Row>
                   <Col>
-                    {!isPropertiesMode && (
+                    {(isRectMode || isArrowMode) && (
                       <Canvas slideshow={slideshow} onUpdate={onUpdate}/>
                     )}
                     {isPropertiesMode && (
                       <Properties slideshow={slideshow} onUpdate={onUpdate}/>
+                    )}
+                    {isSettingsMode && (
+                      <Settings settings={settings} onUpdate={onUpdate}/>
                     )}
                   </Col>
               </Row>

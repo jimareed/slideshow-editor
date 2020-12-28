@@ -5,7 +5,7 @@ const Canvas = (props) => {
 
   const onRectClick = (index) => {
 
-    props.onUpdate("remove", {}, "", index)
+    props.onUpdate("remove", {}, {}, "", index)
   };  
 
   const getRelativePosition = (e, rectWidth, rectHeight) => {
@@ -32,7 +32,7 @@ const Canvas = (props) => {
       slide: ""
     }
 
-    props.onUpdate("add", shape, "", 0)
+    props.onUpdate("add", shape, {}, "", 0)
   };  
 
   return (
