@@ -6,7 +6,6 @@ import { AiFillDelete } from "react-icons/ai";
 import { CgAddR } from "react-icons/cg";
 import { TiEdit } from "react-icons/ti";
 import EditData from "./EditData"
-import EditSpec from "./EditSpec"
 import Editor from "./editor/Editor"
 import { Modal } from 'react-bootstrap'
 
@@ -80,7 +79,6 @@ const Content = (props) => {
   const [isOpen, setIsOpen] = useState([]);
   const [isEditorOpen, setIsEditorOpen] = useState([]);
   const [isEditOpen, setIsEditOpen] = useState([]);
-  const [isSpecOpen, setIsSpecOpen] = useState([]);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
   const [selectedDataItem, setSelectedDataItem] = useState([]);
 
@@ -96,21 +94,11 @@ const Content = (props) => {
     setIsEditOpen(true);
   }
 
-  function openSpecDialog(index) {
-    setSelectedDataItem(data[index])
-    setIsSpecOpen(true);
-  }
-
   const handleClose = () => setIsEditOpen(false);
-  const handleSpecClose = () => setIsSpecOpen(false);
 
   const onUpdate = (dataItem) => {
     updateData(dataItem.Id, dataItem.Name, dataItem.Description)
     setIsEditOpen(false);
-  };
-
-  const onSpecUpdate = () => {
-    setIsSpecOpen(false);
   };
 
   function openSlideshow(name) {
@@ -152,7 +140,6 @@ const Content = (props) => {
     setIsOpen(false);
     setIsEditorOpen(false);
     setIsEditOpen(false);
-    setIsSpecOpen(false);
     setSelectedSlideshow("")
   }, [isAuthenticated, user]);
 
@@ -268,9 +255,6 @@ const Content = (props) => {
                         <button onClick={() => openEditDialog(index)} style={footerButtonStyles}><AiFillEdit/></button>
                       )}
                       {d.Permissions.includes("write") && (
-                        <button onClick={() => openSpecDialog(index)} style={footerButtonStyles}><TiEdit/></button>
-                      )}
-                      {d.Permissions.includes("write") && (
                         <button onClick={() => openEditor(index)} style={footerButtonStyles}><TiEdit/></button>
                       )}
                     </div>
@@ -295,16 +279,6 @@ const Content = (props) => {
         </Modal.Header>
         <Modal.Body>
           <EditData item={selectedDataItem} onUpdate={onUpdate} />
-        </Modal.Body>
-        <Modal.Footer>
-        </Modal.Footer>
-        </Modal>
-        <Modal show={isSpecOpen} onHide={handleSpecClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Slideshow Specification</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <EditSpec item={selectedDataItem} onUpdate={onSpecUpdate} />
         </Modal.Body>
         <Modal.Footer>
         </Modal.Footer>
