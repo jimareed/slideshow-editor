@@ -182,55 +182,21 @@ const Editor = (props) => {
 
   function addShape(shape) {
 
-    var s = {
-      width: 1024,
-      height:768,
-      rectWidth:180,
-      rectHeight:120,
-      shapes: [],
-      connectors: [],
-      transitions: []
-    }
-
-    s.shapes.unshift(shape)
-
-    slideshow.shapes.forEach(function (sh, i) { 
-      s.shapes.unshift(sh)
-    })
-
-    slideshow.connectors.forEach(function (c, i) { 
-      s.connectors.unshift(c)
-    })
+    var s = JSON.parse(JSON.stringify(slideshow))
+    s.shapes.push(shape)
 
     return s
   }
 
   function addConnector(index1, index2) {
 
-    var s = {
-      width: 1024,
-      height:768,
-      rectWidth:180,
-      rectHeight:120,
-      shapes: [],
-      connectors: [],
-      transitions: []
-    }
-
     var connector = {
       shape1: index1,
       shape2: index2
     }
 
-    slideshow.shapes.forEach(function (sh, i) { 
-      s.shapes.unshift(sh)
-    })
-
-    s.connectors.unshift(connector)
-
-    slideshow.connectors.forEach(function (c, i) { 
-      s.connectors.unshift(c)
-    })
+    var s = JSON.parse(JSON.stringify(slideshow))
+    s.connectors.push(connector)
 
     return s
   }
