@@ -88,6 +88,11 @@ const Canvas = (props) => {
           <text x="50%" y="32vh" stroke="lightgrey" textAnchor="middle" fill="lightgrey" fontWeight="5" fontSize="20" onClick={(e) => onCanvasClick(e)} >use arrows to connect blocks</text>
         </>
       )}     
+      {props.slideshow.shapes.length > 0 && props.slideshow.connectors.length === 0 && props.isArrowMode && (
+        <>
+          <text x="70%" y="44vh" stroke="lightgrey" textAnchor="middle" fill="lightgrey" fontWeight="2" fontSize="20" onClick={(e) => onCanvasClick(e)} >click on the blocks to add a connector</text>
+        </>
+      )}     
 
     </svg>
   );
