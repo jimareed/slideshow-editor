@@ -12,7 +12,7 @@ const Properties = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    props.onUpdate("updateSpec", {}, {}, spec, 0)
+    props.onUpdate("updateSpec", {}, {}, spec, 0, 0)
   };
 
 

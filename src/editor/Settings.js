@@ -14,7 +14,7 @@ const Settings = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    props.onUpdate("updateSettings", {}, {name: name, description: description}, "", 0)
+    props.onUpdate("updateSettings", {}, {name: name, description: description}, "", 0, 0)
   };
 
 

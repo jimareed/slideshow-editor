@@ -57,7 +57,9 @@ const Editor = (props) => {
     height:768,
     rectWidth:180,
     rectHeight:120,
-    shapes: []
+    shapes: [],
+    connectors: [],
+    transitions: []
   });
 
   const [settings, setSettings] = useState({
@@ -95,7 +97,9 @@ const Editor = (props) => {
           height:768,
           rectWidth:180,
           rectHeight:120,
-          shapes: []
+          shapes: [],
+          connectors: [],
+          transitions: []      
         })
       } else {
         setSlideshow(JSON.parse(responseData.specification));
@@ -137,7 +141,9 @@ const Editor = (props) => {
       height:768,
       rectWidth:180,
       rectHeight:120,
-      shapes: []
+      shapes: [],
+      connectors: [],
+      transitions: []
     }
 
     slideshow.shapes.forEach(function (shape, i) { 
@@ -181,21 +187,60 @@ const Editor = (props) => {
       height:768,
       rectWidth:180,
       rectHeight:120,
-      shapes: []
+      shapes: [],
+      connectors: [],
+      transitions: []
+    }
+
+    s.shapes.unshift(shape)
+
+    slideshow.shapes.forEach(function (sh, i) { 
+      s.shapes.unshift(sh)
+    })
+
+    slideshow.connectors.forEach(function (c, i) { 
+      s.connectors.unshift(c)
+    })
+
+    return s
+  }
+
+  function addConnector(index1, index2) {
+
+    var s = {
+      width: 1024,
+      height:768,
+      rectWidth:180,
+      rectHeight:120,
+      shapes: [],
+      connectors: [],
+      transitions: []
+    }
+
+    var connector = {
+      shape1: index1,
+      shape2: index2
     }
 
     slideshow.shapes.forEach(function (sh, i) { 
       s.shapes.unshift(sh)
     })
 
-    s.shapes.unshift(shape)
-    return s
+    s.connectors.unshift(connector)
 
+    slideshow.connectors.forEach(function (c, i) { 
+      s.connectors.unshift(c)
+    })
+
+    return s
   }
 
-  function onUpdate(operation, shape, settings, spec, index) {
+
+  function onUpdate(operation, shape, settings, spec, index, index2) {
     if (operation === "add") {
       setSlideshow(addShape(shape))
+    } else if (operation === "addConnector") {
+      setSlideshow(addConnector(index, index2));
     } else if (operation === "updateSettings") {
       setSettings(settings)
     } else if (operation === "updateSpec") {
@@ -273,7 +318,7 @@ const Editor = (props) => {
               <Row>
                   <Col>
                     {(isRectMode || isArrowMode) && (
-                      <Canvas slideshow={slideshow} onUpdate={onUpdate}/>
+                      <Canvas slideshow={slideshow} isArrowMode={isArrowMode} onUpdate={onUpdate}/>
                     )}
                     {isPropertiesMode && (
                       <Properties slideshow={slideshow} onUpdate={onUpdate}/>

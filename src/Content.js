@@ -4,9 +4,7 @@ import Slideshow from "./Slideshow"
 import { AiFillEdit } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
 import { CgAddR } from "react-icons/cg";
-import EditData from "./EditData"
 import Editor from "./editor/Editor"
-import { Modal } from 'react-bootstrap'
 
 
 const SLIDESHOW_DATA_URI = process.env.REACT_APP_SLIDESHOW_DATA_URI || "" 
@@ -77,7 +75,6 @@ const Content = (props) => {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedSlideshow, setSelectedSlideshow] = useState([]);
   const [selectedDataItem, setSelectedDataItem] = useState([]);
 
@@ -87,13 +84,6 @@ const Content = (props) => {
     isAuthenticated,
     user,
   } = useAuth0();
-
-  function openEditDialog(index) {
-    setSelectedDataItem(data[index])
-    setIsEditOpen(true);
-  }
-
-  const handleClose = () => setIsEditOpen(false);
 
   const onUpdate = (dataItem) => {
     updateData(dataItem.Id, dataItem.Name, dataItem.Description)
@@ -137,7 +127,6 @@ const Content = (props) => {
     }
     setIsOpen(false);
     setIsEditorOpen(false);
-    setIsEditOpen(false);
     setSelectedSlideshow("")
   }, [isAuthenticated, user]);
 
@@ -269,16 +258,6 @@ const Content = (props) => {
             )}
           </div>
         </div>
-        <Modal show={isEditOpen} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Slideshow Properties</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <EditData item={selectedDataItem} onUpdate={onUpdate} />
-        </Modal.Body>
-        <Modal.Footer>
-        </Modal.Footer>
-        </Modal>
         <Slideshow isOpen={isOpen} slideshow={selectedSlideshow} onClose={(e) => setIsOpen(false)}>
         </Slideshow>
         <Editor isOpen={isEditorOpen} onUpdate={onUpdate} item={selectedDataItem} onClose={(e) => setIsEditorOpen(false)}>
