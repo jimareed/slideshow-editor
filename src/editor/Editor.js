@@ -137,10 +137,10 @@ const Editor = (props) => {
   function removeShape(index) {
 
     var s = {
-      width: 1024,
-      height:768,
-      rectWidth:180,
-      rectHeight:120,
+      width: slideshow.width,
+      height:slideshow.height,
+      rectWidth:slideshow.rectWidth,
+      rectHeight:slideshow.rectHeight,
       shapes: [],
       connectors: [],
       transitions: []
@@ -148,7 +148,10 @@ const Editor = (props) => {
 
     slideshow.shapes.forEach(function (shape, i) { 
       if (index !== i) {
-        s.shapes.unshift(shape)
+        s.shapes.push(shape)
+
+        var duration = s.shapes.length * 3
+        s.transitions.push({duration: duration})
       }
     })
 
@@ -184,6 +187,9 @@ const Editor = (props) => {
 
     var s = JSON.parse(JSON.stringify(slideshow))
     s.shapes.push(shape)
+
+    var duration = s.shapes.length * 3
+    s.transitions.push({duration: duration})
 
     return s
   }
