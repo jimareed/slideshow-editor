@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import Arrow from "./Arrow"
 
 const Canvas = (props) => {
 
@@ -68,8 +68,7 @@ const Canvas = (props) => {
       })}
       {props.slideshow.connectors.map(function (c, index) {
         return (
-          <>
-          </>
+          <Arrow shape1={props.slideshow.shapes[c.shape1]} shape2={props.slideshow.shapes[c.shape2]} rectWidth={props.slideshow.rectWidth} rectHeight={props.slideshow.rectHeight} />
         );
       })}
       {arrowFrom >= 0 && props.isArrowMode && (
