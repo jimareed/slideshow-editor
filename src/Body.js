@@ -19,6 +19,7 @@ const Body = (props) => {
     return (
       <Jumbotron>
         <div>
+          <p>A reference application that contains basic elements of a cloud architecture including microservices, containerization, authentication and access control.</p>
           <p>Select a slideshow below or <b>Login</b> to create your own slideshow.</p>
           <div>
             <Content/>
